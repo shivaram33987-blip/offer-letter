@@ -24,6 +24,7 @@ app.use('/files/templates', express.static(TEMPLATES_DIR));
 app.use('/api/templates', templateRoutes);
 app.use('/api/generate', generateRoutes);
 app.use('/api/download', downloadRoutes);
+app.get('/', (_req: Request, res: Response) => { res.send('Word PDF Generator Backend is running!'); });
 
 // Health check endpoint
 app.get('/api/health', (_req: Request, res: Response) => {
