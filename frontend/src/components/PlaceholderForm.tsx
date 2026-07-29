@@ -24,6 +24,7 @@ interface PlaceholderFormProps {
   onSubmit: (data: Record<string, any>, customReplacements: Record<string, string>) => void;
   isGenerating: boolean;
   onReset?: () => void;
+  onDeleteTemplate?: () => void;
 }
 
 export const PlaceholderForm: React.FC<PlaceholderFormProps> = ({
@@ -38,6 +39,7 @@ export const PlaceholderForm: React.FC<PlaceholderFormProps> = ({
   onSubmit,
   isGenerating,
   onReset,
+  onDeleteTemplate,
 }) => {
   const {
     register,
@@ -210,11 +212,11 @@ export const PlaceholderForm: React.FC<PlaceholderFormProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Word / Text to Replace
+                      Target Text / Section to Modify or Delete
                     </label>
                     <input
                       type="text"
-                      placeholder="e.g. Kata Anjana Kumar"
+                      placeholder="Select text in preview or enter text..."
                       value={newTarget}
                       onChange={(e) => setNewTarget(e.target.value)}
                       className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900 shadow-2xs"
@@ -223,12 +225,12 @@ export const PlaceholderForm: React.FC<PlaceholderFormProps> = ({
 
                   <div>
                     <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      New Replacement Value
+                      New Replacement Value (Optional)
                     </label>
                     <input
                       ref={replacementInputRef}
                       type="text"
-                      placeholder="e.g. Rahul Sharma"
+                      placeholder="New text (or click Delete to remove)"
                       value={newReplacement}
                       onChange={(e) => setNewReplacement(e.target.value)}
                       className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900 shadow-2xs"
@@ -236,22 +238,35 @@ export const PlaceholderForm: React.FC<PlaceholderFormProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-1">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                   <p className="text-[11px] text-slate-500 flex items-center gap-1.5 font-medium">
                     <MousePointerClick className="w-3.5 h-3.5 text-blue-600" />
-                    Select any text in the preview to auto-fill.
+                    Select any text in live preview to target it.
                   </p>
 
-                  <Button
-                    type="button"
-                    variant={addedToast ? 'secondary' : 'primary'}
-                    size="sm"
-                    onClick={() => handleAddCustomPair()}
-                    disabled={!newTarget.trim()}
-                    leftIcon={addedToast ? <Check className="w-4 h-4 text-emerald-400" /> : <Plus className="w-4 h-4" />}
-                  >
-                    {addedToast ? 'Added!' : 'Add Word Pair'}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleAddCustomPair(newTarget, '')}
+                      disabled={!newTarget.trim()}
+                      leftIcon={<Trash2 className="w-4 h-4" />}
+                    >
+                      Delete Selected Text
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant={addedToast ? 'secondary' : 'primary'}
+                      size="sm"
+                      onClick={() => handleAddCustomPair()}
+                      disabled={!newTarget.trim()}
+                      leftIcon={addedToast ? <Check className="w-4 h-4 text-emerald-400" /> : <Plus className="w-4 h-4" />}
+                    >
+                      {addedToast ? 'Added!' : 'Replace Word'}
+                    </Button>
+                  </div>
                 </div>
               </div>
 
@@ -259,7 +274,7 @@ export const PlaceholderForm: React.FC<PlaceholderFormProps> = ({
               {customPairs.length > 0 && (
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    Queued Word Replacements ({customPairs.length})
+                    Queued Modifications & Deletions ({customPairs.length})
                   </h4>
 
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
@@ -273,16 +288,22 @@ export const PlaceholderForm: React.FC<PlaceholderFormProps> = ({
                             "{pair.targetWord}"
                           </span>
                           <span className="text-slate-400 font-bold">→</span>
-                          <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded line-clamp-1 border border-blue-200">
-                            "{pair.replacementWord || '(empty)'}"
-                          </span>
+                          {pair.replacementWord === '' ? (
+                            <span className="font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded border border-rose-200 flex items-center gap-1">
+                              <Trash2 className="w-3 h-3 text-rose-600" /> [REMOVE / DELETE]
+                            </span>
+                          ) : (
+                            <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded line-clamp-1 border border-blue-200">
+                              "{pair.replacementWord}"
+                            </span>
+                          )}
                         </div>
 
                         <button
                           type="button"
                           onClick={() => handleRemoveCustomPair(pair.id)}
                           className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors shrink-0"
-                          title="Remove pair"
+                          title="Remove from queue"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
