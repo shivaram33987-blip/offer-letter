@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+
+# Backend generated files & uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/generated/*
+!backend/generated/.gitkeep
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# System & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

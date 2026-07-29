@@ -1,0 +1,23 @@
+{
+  "name": "word-placeholder-pdf-generator",
+  "version": "1.0.0",
+  "description": "Word Placeholder Replacement & PDF Generator Web Application",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend"
+  },
+  "keywords": [
+    "docxtemplater",
+    "word",
+    "docx",
+    "pdf",
+    "placeholder-replacement",
+    "express",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT"
+}
